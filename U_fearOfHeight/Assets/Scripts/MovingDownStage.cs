@@ -7,17 +7,29 @@ using UnityEngine;
 public class MovingDownStage : QuickStageBase
 {
 	public GameObject targetGB;
-	public float heightToReach;
-	public float duration; 
+	public float height;
+	public float duration;
+
+	[Tooltip("if 0 it will be set as height/duration")]
+	public float speed;
+	[Tooltip("0-90 degrees")]
+	public float angle;
 
 	private Vector3 _targetPosition;
-	private float speed;
 
 	public override void Init() 
 	{
 		base.Init();
-		speed = heightToReach / duration;
-		_targetPosition = new Vector3(targetGB.transform.position.x, -heightToReach, targetGB.transform.position.z);
+		_maxTimeOut = duration + 60f;
+
+		if (speed == 0f)
+		{
+			speed = height / duration;
+		}
+
+		var c = height / Mathf.Sin(Mathf.Deg2Rad*angle);
+		var z_tanslation = Mathf.Sqrt(c*c - height * height);
+		_targetPosition = new Vector3(targetGB.transform.position.x, targetGB.transform.position.y - height, targetGB.transform.position.z + z_tanslation);
 	}
 
 	protected override void Update()
