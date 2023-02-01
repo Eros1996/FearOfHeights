@@ -6,7 +6,9 @@ using UnityEngine;
 
 public class MovingDownStage : QuickStageBase
 {
-	public GameObject targetGB;
+	public GameObject userPlatform;
+	public GameObject therapistPlatform;
+	public GameObject linkPlatform;
 	public float height;
 	public float duration;
 
@@ -27,9 +29,13 @@ public class MovingDownStage : QuickStageBase
 			speed = height / duration;
 		}
 
-		var c = height / Mathf.Sin(Mathf.Deg2Rad*angle);
-		var z_tanslation = Mathf.Sqrt(c*c - height * height);
-		_targetPosition = new Vector3(targetGB.transform.position.x, targetGB.transform.position.y - height, targetGB.transform.position.z + z_tanslation);
+		linkPlatform.transform.localRotation = Quaternion.Euler(angle, 0, 0);
+		linkPlatform.transform.position = (therapistPlatform.transform.position + userPlatform.transform.position) / 2;
+		linkPlatform.GetComponent<Renderer>().enabled = true;
+
+		var c = height / Mathf.Sin(Mathf.Deg2Rad * angle);
+		var z_tanslation = Mathf.Sqrt(c * c - height * height);
+		_targetPosition = new Vector3(therapistPlatform.transform.position.x, therapistPlatform.transform.position.y - height, therapistPlatform.transform.position.z + z_tanslation);	
 	}
 
 	protected override void Update()
@@ -37,6 +43,10 @@ public class MovingDownStage : QuickStageBase
 		base.Update();
 
 		var step = speed * Time.deltaTime;
-		targetGB.transform.position = Vector3.MoveTowards(targetGB.transform.position, _targetPosition, step);
+		therapistPlatform.transform.position = Vector3.MoveTowards(therapistPlatform.transform.position, _targetPosition, step);
+
+		var scale = Mathf.Abs(therapistPlatform.transform.position.y) / Mathf.Sin(Mathf.Deg2Rad * angle);
+		linkPlatform.transform.position = (therapistPlatform.transform.position + userPlatform.transform.position) /2;
+		linkPlatform.transform.localScale = new Vector3(linkPlatform.transform.localScale.x, linkPlatform.transform.localScale.y, scale);
 	}
 }

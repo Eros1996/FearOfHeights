@@ -3068,8 +3068,10 @@ MonoBehaviour:
   _instructionsVolume: 1
   _instructionsTimePause: 0.5
   targetGB: {fileID: 1297045323}
-  heightToReach: 5
-  duration: 1200
+  height: 10
+  duration: 500
+  speed: 5
+  angle: 90
 --- !u!1001 &875550501
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7531,7 +7533,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7060439978925798898, guid: 0399651f8b11636489f0d0c6e7ea8e4e, type: 3}
       propertyPath: near clip plane
-      value: 0.16195495
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 7060439978925798898, guid: 0399651f8b11636489f0d0c6e7ea8e4e, type: 3}
       propertyPath: m_BackGroundColor.a
