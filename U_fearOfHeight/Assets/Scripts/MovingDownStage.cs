@@ -29,9 +29,8 @@ public class MovingDownStage : QuickStageBase
 			speed = height / duration;
 		}
 
-		linkPlatform.transform.localRotation = Quaternion.Euler(angle, 0, 0);
+		linkPlatform.transform.Rotate(Vector3.forward, angle);
 		linkPlatform.transform.position = (therapistPlatform.transform.position + userPlatform.transform.position) / 2;
-		linkPlatform.GetComponent<Renderer>().enabled = true;
 
 		var c = height / Mathf.Sin(Mathf.Deg2Rad * angle);
 		var z_tanslation = Mathf.Sqrt(c * c - height * height);
@@ -47,6 +46,6 @@ public class MovingDownStage : QuickStageBase
 
 		var scale = Mathf.Abs(therapistPlatform.transform.position.y) / Mathf.Sin(Mathf.Deg2Rad * angle);
 		linkPlatform.transform.position = (therapistPlatform.transform.position + userPlatform.transform.position) /2;
-		linkPlatform.transform.localScale = new Vector3(linkPlatform.transform.localScale.x, linkPlatform.transform.localScale.y, scale);
+		linkPlatform.transform.localScale = new Vector3(scale/10, linkPlatform.transform.localScale.y, linkPlatform.transform.localScale.z);
 	}
 }
