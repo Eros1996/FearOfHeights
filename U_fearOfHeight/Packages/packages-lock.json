@@ -1,5 +1,17 @@
 {
   "dependencies": {
+    "com.agentcreator.modules.pat": {
+      "version": "file:com.agentcreator.modules.pat",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
+    "com.eventlab.dependencies.ovr": {
+      "version": "file:com.eventlab.dependencies.ovr",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.quickvr.quickbase": {
       "version": "https://github.com/eventlab-projects/com.quickvr.quickbase.git",
       "depth": 0,
