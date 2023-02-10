@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class MovingDownStage : QuickStageBase
 {
+	public DiscussionManager discussionManager;
 	public GameObject userPlatform;
 	public GameObject therapistPlatform;
 	public GameObject linkPlatform;
@@ -22,6 +23,7 @@ public class MovingDownStage : QuickStageBase
 	public override void Init() 
 	{
 		base.Init();
+		discussionManager.enabled = true;
 		_maxTimeOut = duration + 60f;
 
 		if (speed == 0f)

@@ -1810,6 +1810,7 @@ GameObject:
   - component: {fileID: 698279229}
   - component: {fileID: 698279231}
   - component: {fileID: 698279230}
+  - component: {fileID: 698279232}
   m_Layer: 0
   m_Name: __Speaker__
   m_TagString: Untagged
@@ -1954,6 +1955,23 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &698279232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 698279228}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 641eb86cc8787e34eb11dde840df9c66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 698279231}
+  audioClips:
+  - {fileID: 8300000, guid: e216e3a85aa23694aa9056edfb1aa330, type: 3}
+  - {fileID: 8300000, guid: 9a9bb461385833c4a8d71f0634bb737c, type: 3}
+  - {fileID: 8300000, guid: 0f529ca35099deb4f99c2fae6e66e93c, type: 3}
 --- !u!1 &707488244
 GameObject:
   m_ObjectHideFlags: 0
@@ -7838,6 +7856,7 @@ MonoBehaviour:
   _instructionsAudioSource: {fileID: 0}
   _instructionsVolume: 1
   _instructionsTimePause: 0.5
+  discussionManager: {fileID: 698279232}
   userPlatform: {fileID: 2031605356}
   therapistPlatform: {fileID: 1032616820}
   linkPlatform: {fileID: 1930815905}
