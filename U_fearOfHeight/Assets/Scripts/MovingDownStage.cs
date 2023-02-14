@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class MovingDownStage : QuickStageBase
 {
-	public DiscussionManager discussionManager;
+	[Header("Platform Movement Setting")]
 	public GameObject userPlatform;
 	public GameObject therapistPlatform;
 	public GameObject linkPlatform;
@@ -18,12 +19,22 @@ public class MovingDownStage : QuickStageBase
 	[Tooltip("0-90 degrees")]
 	public float angle;
 
-	private Vector3 _targetPosition;
+	[Header("Therapist Speaker Setting")]
+	public AudioSource audioSource;
+	public List<AudioClip> audioClips;
+	public bool volumeBasedOnDistance;
 
-	public override void Init() 
+	private int _currentClipIndex = 0;
+	private Vector3 _targetPosition;
+	private float distanceToTarget;
+
+	public override void Init()
 	{
 		base.Init();
-		discussionManager.enabled = true;
+
+		audioSource.clip = null;
+		audioSource.playOnAwake = false;
+
 		_maxTimeOut = duration + 60f;
 
 		if (speed == 0f)
@@ -36,7 +47,7 @@ public class MovingDownStage : QuickStageBase
 
 		var c = height / Mathf.Sin(Mathf.Deg2Rad * angle);
 		var z_tanslation = Mathf.Sqrt(c * c - height * height);
-		_targetPosition = new Vector3(therapistPlatform.transform.position.x, therapistPlatform.transform.position.y - height, therapistPlatform.transform.position.z + z_tanslation);	
+		_targetPosition = new Vector3(therapistPlatform.transform.position.x, therapistPlatform.transform.position.y - height, therapistPlatform.transform.position.z + z_tanslation);
 	}
 
 	protected override void Update()
@@ -47,7 +58,32 @@ public class MovingDownStage : QuickStageBase
 		therapistPlatform.transform.position = Vector3.MoveTowards(therapistPlatform.transform.position, _targetPosition, step);
 
 		var scale = Mathf.Abs(therapistPlatform.transform.position.y) / Mathf.Sin(Mathf.Deg2Rad * angle);
-		linkPlatform.transform.position = (therapistPlatform.transform.position + userPlatform.transform.position) /2;
-		linkPlatform.transform.localScale = new Vector3(scale/10, linkPlatform.transform.localScale.y, linkPlatform.transform.localScale.z);
+		linkPlatform.transform.position = (therapistPlatform.transform.position + userPlatform.transform.position) / 2;
+		linkPlatform.transform.localScale = new Vector3(scale / 10, linkPlatform.transform.localScale.y, linkPlatform.transform.localScale.z);
+
+		if (volumeBasedOnDistance)
+		{
+			distanceToTarget = Vector3.Distance(audioSource.gameObject.transform.position, _vrManager.GetAnimatorTarget().gameObject.transform.position);
+			if (distanceToTarget < 1) { distanceToTarget = 0; }
+			audioSource.volume = Mathf.Clamp(1.0f - (distanceToTarget / 40f), 0.0f, 1.0f); ;
+		}
+
+		if (InputManager.GetButtonDown("NextInstruction") && audioClips.Count > _currentClipIndex && !audioSource.isPlaying)
+		{
+			audioSource.clip = audioClips[_currentClipIndex];
+			audioSource.Play();
+			_currentClipIndex++;
+		}
+
+		if (InputManager.GetButtonDown("CurrentInstruction") && audioClips.Count > _currentClipIndex && !audioSource.isPlaying)
+		{
+			audioSource.clip = audioClips[_currentClipIndex - 1];
+			audioSource.Play();
+		}
+
+		if (audioClips.Count <= _currentClipIndex && !audioSource.isPlaying)
+		{
+			this.Finish();
+		}
 	}
 }
