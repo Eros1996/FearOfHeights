@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class MovingDownStage : QuickStageBase
 {
@@ -23,17 +22,19 @@ public class MovingDownStage : QuickStageBase
 	public AudioSource audioSource;
 	public List<AudioClip> audioClips;
 	public bool volumeBasedOnDistance;
+	public AudioLoudnessDetection audioDetector;
+	public float loudnessSensibility = 200;
+	public float threshold = 0.1f;
+	public float minTimeOfSilence = 10f;
 
 	private int _currentClipIndex = 0;
 	private Vector3 _targetPosition;
 	private float distanceToTarget;
+	private float _timeSinceSilence = 0;
 
 	public override void Init()
 	{
 		base.Init();
-
-		audioSource.clip = null;
-		audioSource.playOnAwake = false;
 
 		_maxTimeOut = duration + 60f;
 
@@ -48,6 +49,10 @@ public class MovingDownStage : QuickStageBase
 		var c = height / Mathf.Sin(Mathf.Deg2Rad * angle);
 		var z_tanslation = Mathf.Sqrt(c * c - height * height);
 		_targetPosition = new Vector3(therapistPlatform.transform.position.x, therapistPlatform.transform.position.y - height, therapistPlatform.transform.position.z + z_tanslation);
+
+		audioSource.clip = audioClips[_currentClipIndex];
+		audioSource.Play();
+		_currentClipIndex++;
 	}
 
 	protected override void Update()
@@ -68,7 +73,30 @@ public class MovingDownStage : QuickStageBase
 			audioSource.volume = Mathf.Clamp(1.0f - (distanceToTarget / 40f), 0.0f, 1.0f); ;
 		}
 
-		if (InputManager.GetButtonDown("NextInstruction") && audioClips.Count > _currentClipIndex && !audioSource.isPlaying)
+		float loudness = audioDetector.GetLoudnessFromMicrophone() * loudnessSensibility;
+		if (loudness >= threshold)
+		{
+			//Debug.Log("Player is Speaking");
+			_timeSinceSilence = 0;
+			return;
+		}
+		else if (loudness < threshold && !audioSource.isPlaying)
+		{
+			//Debug.Log("Player is NOT Speaking");
+			_timeSinceSilence += Time.deltaTime;
+		}
+
+		if (_timeSinceSilence >= minTimeOfSilence && !audioSource.isPlaying) 
+		{
+			//Debug.Log("Player do NOT speak for 10 sec");
+
+			_timeSinceSilence = 0;
+			audioSource.clip = audioClips[_currentClipIndex];
+			audioSource.Play();
+			_currentClipIndex++;
+		}
+
+		/*if (InputManager.GetButtonDown("NextInstruction") && audioClips.Count > _currentClipIndex && !audioSource.isPlaying)
 		{
 			audioSource.clip = audioClips[_currentClipIndex];
 			audioSource.Play();
@@ -79,11 +107,12 @@ public class MovingDownStage : QuickStageBase
 		{
 			audioSource.clip = audioClips[_currentClipIndex - 1];
 			audioSource.Play();
-		}
+		}*/
 
 		if (audioClips.Count <= _currentClipIndex && !audioSource.isPlaying)
 		{
-			this.Finish();
+			//this.Finish();
+			_currentClipIndex = 0;
 		}
 	}
 }
