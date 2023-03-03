@@ -1,7 +1,10 @@
 using QuickVR;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static UnityEngine.GraphicsBuffer;
 
 public class MovingDownStage : QuickStageBase
 {
@@ -31,19 +34,19 @@ public class MovingDownStage : QuickStageBase
 
 	[Header("Therapist LookAt player")]
 	public GameObject therapistHead;
+	public TextMeshProUGUI textMeshProUGUI;
 
 	private int _currentClipIndex = 0;
 	private float distanceToTarget = 0;
 	private float _timeSinceSilence = 0;
 	private bool _isReachedTarget = false;
 	private Vector3 _targetPosition = Vector3.zero;
+	private float t = 0;
 
 	public override void Init()
 	{
 		base.Init();
-
 		duration = _maxTimeOut - 60f;
-		speed = height / duration;
 
 		linkPlatform.transform.Rotate(Vector3.forward, angle);
 		linkPlatform.transform.position = (therapistPlatform.transform.position + userPlatform.transform.position) / 2;
@@ -53,11 +56,15 @@ public class MovingDownStage : QuickStageBase
 		var z_tanslation = Mathf.Sqrt(c * c - height * height);
 		_targetPosition = new Vector3(therapistPlatform.transform.position.x, therapistPlatform.transform.position.y - height, therapistPlatform.transform.position.z + z_tanslation);
 
+		var distance = Vector3.Distance(therapistPlatform.transform.position, _targetPosition);
+		//Debug.Log(distance);
+		speed = distance / duration;
+
 		audioSource.clip = audioClips[_currentClipIndex];
 		audioSource.Play();
 		_currentClipIndex++;
 
-		StartCoroutine(MovePlayerMobile(therapistPlatform.transform.position, _targetPosition, duration));
+		StartCoroutine(MovePlatform(therapistPlatform.transform.position, _targetPosition, duration));
 	}
 
 	protected override void Update()
@@ -97,15 +104,19 @@ public class MovingDownStage : QuickStageBase
 		}
 	}
 
-	IEnumerator MovePlayerMobile(Vector3 startPosition, Vector3 targetPosition, float time)
+	IEnumerator MovePlatform(Vector3 startPosition, Vector3 targetPosition, float time)
 	{
 		yield return new WaitForSeconds(minWaitingTime);
 
 		float elapsedTime = 0, scale = 0;
-		while (elapsedTime < duration)
+		while (elapsedTime < time)
 		{
-			therapistPlatform.transform.position = Vector3.Lerp(startPosition, targetPosition, (elapsedTime / duration));
+			var curr = therapistPlatform.transform.position;
+			therapistPlatform.transform.position = Vector3.Lerp(startPosition, targetPosition, (elapsedTime / time));
 
+			//Debug.Log("Current Step: " + (Vector3.Distance(curr, therapistPlatform.transform.position).ToString("F8")));
+			textMeshProUGUI.text = Vector3.Distance(curr, therapistPlatform.transform.position).ToString();
+			
 			scale = Mathf.Abs(therapistPlatform.transform.position.y) / Mathf.Sin(Mathf.Deg2Rad * angle);
 			linkPlatform.transform.position = (therapistPlatform.transform.position + userPlatform.transform.position) / 2;
 			linkPlatform.transform.localScale = new Vector3(scale / 10, linkPlatform.transform.localScale.y, linkPlatform.transform.localScale.z);
