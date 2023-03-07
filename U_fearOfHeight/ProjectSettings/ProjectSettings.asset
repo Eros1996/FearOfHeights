@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: FearOfHeight_20m_5h
+  productName: FearOfHeight_3m_20h
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -163,6 +163,11 @@ PlayerSettings:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 7937413547786672475, guid: 77f5e2f99ac277a4fa79ac939e8d6fcb, type: 2}
+  - {fileID: 11400000, guid: 303d3a9fc6eeaa94dac2fcd8dcfd6ee4, type: 2}
+  - {fileID: 0}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -182,7 +187,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.DefaultCompany.FearOfHeight_20m_5h
+    Android: com.DefaultCompany.FearOfHeight_3m_20h
     Standalone: com.DefaultCompany.U-fearOfHeight
   buildNumber:
     Standalone: 0

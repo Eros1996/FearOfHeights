@@ -41,7 +41,6 @@ public class MovingDownStage : QuickStageBase
 	private float _timeSinceSilence = 0;
 	private bool _isReachedTarget = false;
 	private Vector3 _targetPosition = Vector3.zero;
-	private float t = 0;
 
 	public override void Init()
 	{
@@ -50,15 +49,16 @@ public class MovingDownStage : QuickStageBase
 
 		linkPlatform.transform.Rotate(Vector3.forward, angle);
 		linkPlatform.transform.position = (therapistPlatform.transform.position + userPlatform.transform.position) / 2;
-		linkPlatform.transform.localScale = new Vector3(0f, linkPlatform.transform.localScale.y, linkPlatform.transform.localScale.z);
+		var scale = Mathf.Abs(therapistPlatform.transform.position.y) / Mathf.Sin(Mathf.Deg2Rad * angle);
+		linkPlatform.transform.localScale = new Vector3(scale/10f, linkPlatform.transform.localScale.y, linkPlatform.transform.localScale.z);
 
 		var c = height / Mathf.Sin(Mathf.Deg2Rad * angle);
 		var z_tanslation = Mathf.Sqrt(c * c - height * height);
-		_targetPosition = new Vector3(therapistPlatform.transform.position.x, therapistPlatform.transform.position.y - height, therapistPlatform.transform.position.z + z_tanslation);
+		_targetPosition = new Vector3(therapistPlatform.transform.position.x, -height, z_tanslation); // it consider the Therapist platform to be at  (0, 0, 0) 
 
-		var distance = Vector3.Distance(therapistPlatform.transform.position, _targetPosition);
+		//var distance = Vector3.Distance(therapistPlatform.transform.position, _targetPosition);
 		//Debug.Log(distance);
-		speed = distance / duration;
+		//speed = distance / duration;
 
 		audioSource.clip = audioClips[_currentClipIndex];
 		audioSource.Play();
@@ -98,6 +98,7 @@ public class MovingDownStage : QuickStageBase
 			_currentClipIndex++;
 		}
 
+		// To be deleted when therapist script is completed
 		if (audioClips.Count <= _currentClipIndex)
 		{
 			_currentClipIndex = 0;
@@ -115,7 +116,7 @@ public class MovingDownStage : QuickStageBase
 			therapistPlatform.transform.position = Vector3.Lerp(startPosition, targetPosition, (elapsedTime / time));
 
 			//Debug.Log("Current Step: " + (Vector3.Distance(curr, therapistPlatform.transform.position).ToString("F8")));
-			textMeshProUGUI.text = Vector3.Distance(curr, therapistPlatform.transform.position).ToString();
+			//textMeshProUGUI.text = Vector3.Distance(curr, therapistPlatform.transform.position).ToString();
 			
 			scale = Mathf.Abs(therapistPlatform.transform.position.y) / Mathf.Sin(Mathf.Deg2Rad * angle);
 			linkPlatform.transform.position = (therapistPlatform.transform.position + userPlatform.transform.position) / 2;
