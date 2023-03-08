@@ -54,11 +54,7 @@ public class MovingDownStage : QuickStageBase
 
 		var c = height / Mathf.Sin(Mathf.Deg2Rad * angle);
 		var z_tanslation = Mathf.Sqrt(c * c - height * height);
-		_targetPosition = new Vector3(therapistPlatform.transform.position.x, -height, z_tanslation); // it consider the Therapist platform to be at  (0, 0, 0) 
-
-		//var distance = Vector3.Distance(therapistPlatform.transform.position, _targetPosition);
-		//Debug.Log(distance);
-		//speed = distance / duration;
+		_targetPosition = new Vector3(therapistPlatform.transform.position.x, -height, z_tanslation);  
 
 		audioSource.clip = audioClips[_currentClipIndex];
 		audioSource.Play();
@@ -90,7 +86,7 @@ public class MovingDownStage : QuickStageBase
 			_timeSinceSilence += Time.deltaTime;
 		}
 	
-		if (_timeSinceSilence >= minTimeOfSilence)
+		if (_timeSinceSilence >= minTimeOfSilence || InputManager.GetButtonDown("NextAudio"))
 		{
 			_timeSinceSilence = 0;
 			audioSource.clip = audioClips[_currentClipIndex];
